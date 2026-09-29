@@ -3,7 +3,7 @@ import hid
 from PIL import Image, ImageDraw, ImageFont
 import pystray
 
-dispositivo = "JBL"   # "JBL" ou "DualSense"
+dispositivo = "JBL"
 nivel = None
 
 def bateria_jbl(nome="JBL"):
@@ -24,9 +24,9 @@ def bateria_jbl(nome="JBL"):
 def bateria_dualsense():
     try:
         d = hid.device()
-        d.open(0x054C, 0x0CE6)          # DualSense
+        d.open(0x054C, 0x0CE6)          
         try:
-            d.get_feature_report(0x05, 41)  # vai ativar o relatorio completo no BT
+            d.get_feature_report(0x05, 41)  
         except Exception:
             pass
         d.set_nonblocking(False)
@@ -34,9 +34,9 @@ def bateria_dualsense():
             rep = d.read(100, 1000)
             if not rep:
                 continue
-            if rep[0] == 0x31 and len(rep) > 54:      # Bluetooth
+            if rep[0] == 0x31 and len(rep) > 54:      
                 status = rep[54]
-            elif rep[0] == 0x01 and len(rep) > 53 and len(rep) >= 64:  # USB
+            elif rep[0] == 0x01 and len(rep) > 53 and len(rep) >= 64:  
                 status = rep[53]
             else:
                 continue
@@ -62,7 +62,7 @@ def atualiza(icon):
         nivel = bateria_jbl() if dispositivo == "JBL" else bateria_dualsense()
         icon.icon = desenha_icone(nivel)
         icon.title = f"{dispositivo}: {nivel if nivel is not None else '?'}%"
-        time.sleep(20)
+        time.sleep(10)
 
 def escolhe(nome):
     def _f(icon, item):
