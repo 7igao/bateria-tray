@@ -1,0 +1,50 @@
+	BateriaTray
+
+Pequeno app de bandeja do Windows que mostra a porcentagem de bateria de um fone Bluetooth JBL e de um controle DualSense (PS5) direto na barra de tarefas, ao lado do volume.
+
+O número aparece desenhado no próprio ícone. Com o botão direito você escolhe qual dispositivo quer monitorar.
+
+
+	Recursos
+
+- Ícone na bandeja com a % da bateria do dispositivo escolhido
+- Alternância entre Fone JBL e DualSense pelo menu do ícone
+- Número vermelho quando a bateria está baixa (20% ou menos)
+- Ícone de raio e número verde quando o DualSense está carregando
+- Tooltip com o nome do dispositivo e a porcentagem (passe o mouse no ícone)
+- Atualização automática a cada 30 segundos, ou na hora com Atualizar agora
+
+	Download (mais fácil)
+
+1. Vá em [Versoes](https://github.com/7igao/bateria-tray/versoes) e baixe o BateriaTray.exe
+2. Copie para uma pasta fixa, por exemplo `C:\BateriaTray\`
+3. Dê dois cliques. O ícone aparece na bandeja (se estiver escondido, clique na setinha ^ e arraste o ícone para a barra).
+
+> Executáveis gerados com PyInstaller às vezes disparam *falso positivo* no Windows Defender / SmartScreen. O código-fonte está todo neste repositório, e você pode gerar o `.exe` você mesmo (veja abaixo).
+
+	Iniciar com o Windows
+
+1. Aperte Win + R, digite shell:startup e Enter.
+2. Crie um atalho do `BateriaTray.exe` dentro dessa pasta.
+
+No próximo login o ícone aparece sozinho.
+
+O executável fica em `dist\BateriaTray.exe`. Se ele abrir e fechar sem mostrar o ícone, refaça o build com `collect-all hid`
+
+	Como funciona
+
+*Fone JBL* Propriedade de bateria que o Windows guarda para dispositivos Bluetooth (perfil Hands-Free), consultada via PowerShell
+*DualSense* Leitura direta do relatório HID do controle com a biblioteca `hidapi`. Funciona por Bluetooth e por cabo USB
+
+	Limitações
+
+JBL: só funciona se o Windows enxerga a bateria do fone. O valor vem em degraus (10, 20, 30...) e *não informa se está carregando*. Com o fone desconectado, o ícone mostra `?`
+DualSense: feche programas que seguram o controle (Steam, DS4Windows), senão a leitura falha.
+O nome do fone é buscado por `JBL` no nome do dispositivo. Testado com o *JBL Tune 520BT*; outros modelos podem ou não expor a bateria no Windows
+O id do DualSense (`0x054C` / `0x0CE6`) são do controle original. Outras variações podem precisar de ajuste
+
+	Dependências
+
+[pystray](https://github.com/moses-palmer/pystray): ícone de bandeja
+[Pillow](https://python-pillow.org/): desenho do ícone
+[hidapi](https://github.com/trezor/cython-hidapi): leitura HID do DualSense
